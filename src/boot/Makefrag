@@ -1,0 +1,20 @@
+# MBR CODE COMPILATION
+# 1. Preprocess boot assembly code
+# 2. Compile to object file 
+# 3. Link with BIOS' MBR start address (0x7C00)
+# 4. Strip down ELF to a flat binary format (code + data)
+$(OBJDIR)/mbrboot-x86-32: $(SRCDIR)/boot/mbrboot.S
+	@echo + as $<
+	@$(CC) $(X86_32_CCFLAGS) $< -o $@.o
+	@echo + ld $@.o
+	@$(LD) $(X86_32_LDFLAGS) -N -e real_boot -Ttext 0x7C00 -o $@.out $@.o
+	@echo + oc $@.out
+	@$(OC) -S -O binary $@.out $@
+
+$(OBJDIR)/boot-x86-32: $(SRCDIR)/boot/boot.S
+	@echo + as $<
+	@$(CC) $(X86_32_CCFLAGS) $< -o $@.o
+	@echo + ld $@.o
+	@$(LD) $(X86_32_LDFLAGS) -N -e protected_boot -Ttext 0xB000 -o $@.out $@.o
+	@echo + oc $@.out
+	@$(OC) -S -O binary $@.out $@

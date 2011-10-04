@@ -1,0 +1,26 @@
+# kernelentry.cpp must be first
+KERN_SRCS = kernelentry.cpp \
+            kernel.cpp \
+            keyboard.cpp \
+            textgraphics.cpp \
+	    key.cpp \
+	    memorymanager.cpp \
+            x86/x86.cpp \
+            x86/idt.cpp \
+            x86/pic.cpp \
+            x86/pit.cpp \
+            x86/int.S
+
+KERN_SRCFILES = $(patsubst %, $(SRCDIR)/%, $(KERN_SRCS))
+KERN_SRCNAMES = $(notdir $(basename $(KERN_SRCS)))
+KERN_X86_32_OBJFILES := $(patsubst %, $(OBJDIR)/%-x86-32.o, $(KERN_SRCNAMES))
+
+$(KERN_X86_32_OBJFILES): $(KERN_SRCFILES)
+	@echo + cc $?
+	$(foreach SRCFILE, $(KERN_SRCFILES), $(shell $(CC) $(X86_32_CCFLAGS) -o $(OBJDIR)/$(notdir $(basename $(SRCFILE)))-x86-32.o $(SRCFILE)))
+
+$(OBJDIR)/kernel-x86-32: $(KERN_X86_32_OBJFILES)
+	@echo + ld $(KERN_X86_32_OBJFILES)
+	@$(LD) $(X86_32_LDFLAGS) -T $(SRCDIR)/kernel.ld -o $@.out $? -b binary 
+	@echo + oc $@.out
+	@$(OC) -S -O binary $@.out $@

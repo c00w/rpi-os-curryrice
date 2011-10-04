@@ -1,0 +1,2 @@
+$(UTLDIR)/diskmbr/diskmbr: $(UTLDIR)/diskmbr/diskmbr.cpp $(UTLDIR)/diskmbr/diskmbr.h $(UTLDIR)/diskmbr/main.cpp
+	@g++ -std=c++0x -O2 -o $(UTLDIR)/diskmbr/diskmbr $(UTLDIR)/diskmbr/main.cpp $(UTLDIR)/diskmbr/diskmbr.cpp

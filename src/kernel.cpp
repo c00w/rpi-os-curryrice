@@ -13,7 +13,7 @@ namespace kernel
 
   }
 
-  void proccess(char * values){
+  int proccess(char * values){
     char * a = "quit";
     if (strcmp(values, a)){
       return -1;

@@ -55,7 +55,7 @@ namespace text_graphics
     update_cursor_pos();
   }
 
-  void set_cursor_pos(const vec2dui& position)
+  void set_cursor_pos(const point2d& position)
   { set_cursor_pos(position.x + position.y*cols()); }
 
   void hide_cursor()

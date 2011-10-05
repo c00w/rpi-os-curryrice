@@ -3,7 +3,7 @@
 namespace kernel
 {
 
-    int len(const char * in){
+    int lenstr(const char * in){
         int l = 0;
         while(*in != 0){
             in++;
@@ -11,18 +11,18 @@ namespace kernel
         }
         return l;
 
-    }
+    };
 
     class String{
         public:
             String(const char * in){
                 this->char_pointer = in;
-                this->len = len(in);
+                this->len = lenstr(in);
             }
         private:
             const char * char_pointer;
             int len;
-    }
+    };
 
     class Console{
         public:
@@ -34,6 +34,8 @@ namespace kernel
                 this->pos = 0;
                 this->buff_index = 0;
             };
+
+            int proccess(const char * c){return 1;};
             void write(String str);
             bool one_step(){
                   char key = keyboard::get_char();
@@ -53,10 +55,11 @@ namespace kernel
                   } else{
 
                     //Go to the newline and set position + proccess command
-                    this->pos = (this->pos/80)*80 + 80;
+                    int cols = text_graphics::cols();
+                    this->pos = (this->pos/cols)*cols + cols;
 
                     //Clear and reset if we go to far.
-                    if (this->pos > 23*80){
+                    if (this->pos > 23*cols){
                         text_graphics::clear();
                         this->pos = 0;
                     }
@@ -64,8 +67,8 @@ namespace kernel
                     if(proccess(this->string_buffer) == -1){
                        return false;
                     };
-                    return true;
                 } 
+                return true;
             }
 
         private:
@@ -74,25 +77,16 @@ namespace kernel
             int pos;
             int buff_index;
 
-    }
+    };
 
-  bool strcmp(char * first, char * second){
+bool strcmp(const char * first, const char * second){
     while(first && second){
       if (*first != *second){
         return false;
-      }
+      };
       first++; second++;
-    }
+    };
     return true;
-  }
-
-  int proccess(char * values){
-    char * a = "quit";
-    if (strcmp(values, a)){
-      return -1;
-    }
-
-    return 1;
   }
 
   void main()
@@ -101,7 +95,7 @@ namespace kernel
     //Loop until we wan to quit
     char key = 0;
     char escape = 0;
-    Console console();
+    Console console = Console();
     while (console.one_step()){
 
       
